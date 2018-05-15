@@ -14,7 +14,7 @@ before_install:
   - pip install scipy
   - pip install torch
   - pip install cffi
-  - pip install git+https://github.com/jpuigcerver/prob-phoc
+  - pip install .
 
 script:
   - python -m prob_phoc.phoc_test
