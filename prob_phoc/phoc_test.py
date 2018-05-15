@@ -1,13 +1,15 @@
+from __future__ import absolute_import
+
 import unittest
 
-import torch
 import numpy as np
+import torch
 
 from prob_phoc.phoc import cphoc, pphoc
 
 
 class ProbPhocTest(unittest.TestCase):
-    def cphoc_arbitrary_test(self):
+    def test_cphoc_arbitrary(self):
         x = torch.DoubleTensor([[0.7, 0.4], [0.9, 0.6]]).log_()
         y = torch.DoubleTensor([[0.5, 0.9], [0.8, 0.9], [0.1, 0.2]]).log_()
         expected_z = np.log(np.asarray([
@@ -30,7 +32,7 @@ class ProbPhocTest(unittest.TestCase):
         z = z.numpy()
         np.testing.assert_almost_equal(z, expected_z.astype(np.float32))
 
-    def phoc_arbitrary_test(self):
+    def test_phoc_arbitrary(self):
         x = torch.DoubleTensor([[0.7, 0.4], [0.9, 0.4]]).log_()
         expected_y = np.log(np.asarray([
             (0.7 * 0.7 + 0.3 * 0.3) * (0.4 * 0.4 + 0.6 * 0.6),
