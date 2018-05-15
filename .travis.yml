@@ -10,6 +10,10 @@ python:
   - "3.6"
 
 before_install:
+  - pip install numpy
+  - pip install scipy
+  - pip install torch
+  - pip install cffi
   - pip install git+https://github.com/jpuigcerver/prob-phoc
 
 script:
