@@ -10,6 +10,7 @@ python:
 
 env:
   - CC=g++
+  - CC=clang++
 
 before_install:
   - easy_install -q -U pip
