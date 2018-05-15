@@ -42,7 +42,16 @@ working fine.
 
 ```bash
 python -m prob_phoc.test
-``` 
+```
+
+If you see the following warning during the tests, something went wrong.
+You will still be able to use the library, but the C++ bindings were not 
+properly installed and Python code will be used instead, which is **much**
+slower.
+
+```text
+UserWarning: The C++ implementation of prob_phoc could not be imported [...]
+```
 
 ## Usage
 
