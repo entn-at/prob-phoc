@@ -9,8 +9,8 @@ python:
   - "3.6"
 
 env:
-  - CC=g++
-  - CC=clang++
+  - CC=g++ CXX=g++
+  - CC=clang++ CXX=clang++
 
 before_install:
   - easy_install -q -U pip
