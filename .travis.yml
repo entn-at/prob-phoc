@@ -10,6 +10,7 @@ python:
   - "3.6"
 
 before_install:
+  - easy_install -q -U pip
   - pip install --progress-bar off numpy
   - pip install --progress-bar off scipy
   - pip install --progress-bar off torch
