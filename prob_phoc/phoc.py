@@ -3,19 +3,19 @@ from __future__ import division
 
 import numpy as np
 import torch
+import warnings
 
 try:
-    from ._phoc import cphoc_f32, cphoc_f64
-    from ._phoc import pphoc_f32, pphoc_f64
-except ImportError:
+    from ._ext import cphoc_f32, cphoc_f64
+    from ._ext import pphoc_f32, pphoc_f64
+except ImportError as ex:
+    warnings.warn('The C++ implementation of prob_phoc could not be imported '
+                  '(%s). Python implementation will be used. ' % str(ex))
+
     import math
     from scipy.misc import logsumexp
 
-
     def _compute(a, b):
-        assert torch.is_tensor(a) and torch.is_tensor(b)
-        a, b = a.cpu(), b.cpu()
-
         result = 0.0
         for i in range(a.size(0)):
             h1 = a[i] + b[i]
@@ -31,7 +31,7 @@ except ImportError:
     def _cphoc(x, y, out):
         for i in range(x.size(0)):
             for j in range(y.size(0)):
-                out[i, j] = _compute(x[i], y[i])
+                out[i, j] = _compute(x[i], y[j])
 
 
     def _pphoc(x, out):
@@ -77,7 +77,7 @@ def pphoc(x, out=None):
     x = x.cpu()
 
     if out is None:
-        out = torch.zeros(x.size(0) * (x.size(0) + 1) / 2, )
+        out = torch.zeros(x.size(0) * (x.size(0) + 1) // 2, )
 
     if x.type() == 'torch.FloatTensor':
         pphoc_f32(x, out)

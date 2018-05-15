@@ -20,7 +20,7 @@ if torch.cuda.is_available():
 """
 
 ffi = create_extension(
-    'prob_phoc._phoc',
+    'prob_phoc._ext',
     language='cc',
     package=True,
     headers=headers,
