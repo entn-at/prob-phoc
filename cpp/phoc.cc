@@ -16,7 +16,7 @@ using nnutils::THW::TensorTraits;
 template <typename T>
 static inline T logsumexp(T a, T b) {
    if (b > a) { std::swap(a, b); }
-   return std::log1p(std::exp(b - a));
+   return a + std::log1p(std::exp(b - a));
 }
 
 template <typename Int, typename T>

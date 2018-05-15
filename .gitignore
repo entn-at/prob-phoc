@@ -104,5 +104,5 @@ venv.bak/
 .mypy_cache/
 
 .idea
-prob_phoc/_phoc
+prob_phoc/_ext
 *~

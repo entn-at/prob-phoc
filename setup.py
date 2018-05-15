@@ -9,7 +9,7 @@ import build
 this_file = os.path.dirname(__file__)
 
 setup(
-    name='prob_phoc',
+    name='prob-phoc',
     description='Compute probabilistic PHOC relevance scores efficiently',
     version='0.1',
     url='https://github.com/jpuigcerver/prob_phoc',

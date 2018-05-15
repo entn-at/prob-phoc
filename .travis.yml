@@ -1,0 +1,21 @@
+language: python
+
+os:
+  - linux
+  - osx
+
+python:
+  - "2.7"
+  - "3.5"
+  - "3.6"
+
+before_install:
+  - pip install git+https://github.com/jpuigcerver/prob-phoc
+
+script:
+  - python -m prob_phoc.phoc_test
+
+notifications:
+  email:
+      on_success: change
+      on_failure: always

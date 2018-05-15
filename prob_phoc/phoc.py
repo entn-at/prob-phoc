@@ -58,7 +58,7 @@ def cphoc(x, y, out=None):
     x, y = x.cpu(), y.cpu()
 
     if out is None:
-        out = torch.zeros(x.size(0), y.size(0))
+        out = x.new(x.size(0), y.size(0)).zero_()
 
     if x.type() == 'torch.FloatTensor':
         cphoc_f32(x, y, out)
@@ -77,7 +77,7 @@ def pphoc(x, out=None):
     x = x.cpu()
 
     if out is None:
-        out = torch.zeros(x.size(0) * (x.size(0) + 1) // 2, )
+        out = x.new(x.size(0) * (x.size(0) + 1) // 2,).zero_()
 
     if x.type() == 'torch.FloatTensor':
         pphoc_f32(x, out)
