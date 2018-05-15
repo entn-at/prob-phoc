@@ -10,11 +10,11 @@ python:
   - "3.6"
 
 before_install:
-  - pip install numpy
-  - pip install scipy
-  - pip install torch
-  - pip install cffi
-  - pip install .
+  - pip install --progress-bar off numpy
+  - pip install --progress-bar off scipy
+  - pip install --progress-bar off torch
+  - pip install --progress-bar off cffi
+  - pip install --progress-bar off .
 
 script:
   - python -m prob_phoc.phoc_test
