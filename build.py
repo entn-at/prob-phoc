@@ -1,5 +1,5 @@
 import os
-import torch
+
 from torch.utils.ffi import create_extension
 
 this_file = os.path.dirname(__file__)
@@ -35,7 +35,6 @@ ffi = create_extension(
         '-fopenmp',
         '-std=c++11'
     ])
-
 
 if __name__ == '__main__':
     ffi.build()
