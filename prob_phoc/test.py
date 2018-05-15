@@ -33,11 +33,14 @@ class ProbPhocTest(unittest.TestCase):
         np.testing.assert_almost_equal(z, expected_z.astype(np.float32))
 
     def test_phoc_arbitrary(self):
-        x = torch.DoubleTensor([[0.7, 0.4], [0.9, 0.4]]).log_()
+        x = torch.DoubleTensor([[.7, .4], [.9, .4], [.5, .2]]).log_()
         expected_y = np.log(np.asarray([
-            (0.7 * 0.7 + 0.3 * 0.3) * (0.4 * 0.4 + 0.6 * 0.6),
-            (0.7 * 0.9 + 0.3 * 0.1) * (0.4 * 0.4 + 0.6 * 0.6),
-            (0.9 * 0.9 + 0.1 * 0.1) * (0.4 * 0.4 + 0.6 * 0.6)
+            (.7 * .7 + .3 * .3) * (.4 * .4 + .6 * .6),
+            (.7 * .9 + .3 * .1) * (.4 * .4 + .6 * .6),
+            (.7 * .5 + .3 * .5) * (.4 * .2 + .6 * .8),
+            (.9 * .9 + .1 * .1) * (.4 * .4 + .6 * .6),
+            (.9 * .5 + .1 * .5) * (.4 * .2 + .6 * .8),
+            (.5 * .5 + .5 * .5) * (.2 * .2 + .8 * .8),
         ], dtype=np.float64))
         # Test float64 (double)
         y = pphoc(x).numpy()

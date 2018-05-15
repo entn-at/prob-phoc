@@ -101,8 +101,8 @@ static inline int pphoc(const ConstTensor<TT>& X,
       if (j >= i) {
         const auto xi = X.Data() + i * ND;
         const auto yj = X.Data() + j * ND;
-        const auto p = i * (NX - i) + j;
-        R->Data()[p] = compute_pair(ND, xi, yj);
+        const auto k = i * NX - i * (i - 1) / 2 + (j - i);
+        R->Data()[k] = compute_pair(ND, xi, yj);
       }
     }
   }

@@ -35,10 +35,11 @@ except ImportError as ex:
 
 
     def _pphoc(x, out):
+        k = 0
         for i in range(x.size(0)):
             for j in range(i, x.size(0)):
-                k = i * (x.size(0) - i) + j
                 out[k] = _compute(x[i], x[j])
+                k += 1
 
 
     cphoc_f32 = cphoc_f64 = _cphoc
