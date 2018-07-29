@@ -9,18 +9,18 @@ python:
   - "3.6"
 
 env:
-  - CC=g++ CXX=g++
-  - CC=clang++ CXX=clang++
+  - CC=gcc CXX=g++
+  - CC=clang CXX=clang++
 
 before_install:
   - easy_install -q -U pip
   - pip install --progress-bar off numpy
   - pip install --progress-bar off scipy
-  - pip install --progress-bar off torch==0.3.1
   - pip install --progress-bar off cffi
+  - travis/install_pytorch.sh
 
 script:
-  - python setup.py install
+  - CC=$CXX python setup.py install
   - cd $HOME
   - python -m prob_phoc.test
 
