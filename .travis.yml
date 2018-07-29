@@ -16,7 +16,7 @@ before_install:
   - easy_install -q -U pip
   - pip install --progress-bar off numpy
   - pip install --progress-bar off scipy
-  - pip install --progress-bar off torch
+  - pip install --progress-bar off torch==0.3.1
   - pip install --progress-bar off cffi
 
 script:

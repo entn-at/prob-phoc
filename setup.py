@@ -4,8 +4,6 @@ import os
 
 from setuptools import setup, find_packages
 
-import build
-
 this_file = os.path.dirname(__file__)
 
 setup(
@@ -21,11 +19,11 @@ setup(
         'cffi>=1.0.0',
         'numpy',
         'scipy',
-        'torch>=0.3',
+        'torch==0.3.1',
     ],
     setup_requires=[
         'cffi>=1.0.0',
-        'torch>=0.3',
+        'torch==0.3.1',
     ],
     # Exclude the build files.
     packages=find_packages(exclude=['build']),
