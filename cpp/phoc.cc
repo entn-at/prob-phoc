@@ -19,7 +19,13 @@ static inline T logsumexp(T a, T b) {
    return a + std::log1p(std::exp(b - a));
 }
 
-class ComputePair {
+template <typename T>
+static inline T logm1exp1m(T x) {
+  const T aux = -std::expm1(x);
+  return aux > 0 ? std::log(aux) : -std::numeric_limits<T>::infinity();
+}
+
+class ComputePairIndependece {
  public:
   template <typename Int, typename T>
   inline T operator()(Int n, const T* a, const T* b) {
@@ -37,19 +43,24 @@ class ComputePair {
   }
 };
 
-class ComputePairMin {
+class ComputePairUpperBound {
  public:
   template <typename Int, typename T>
   inline T operator()(Int n, const T* a, const T* b) {
-    T result = std::numeric_limits<T>::max();
-    for (Int i = 0; i < n; ++i) {
-      const T pa0 = -std::expm1(a[i]);
-      const T pb0 = -std::expm1(b[i]);
-      const T lh1 = a[i] + b[i];
-      const T lh0 = (pa0 > 0 && pb0 > 0)
-          ? std::log(pa0) + std::log(pb0)
-          : -std::numeric_limits<T>::infinity();
-      result = std::min(result, logsumexp(lh0, lh1));
+    if (n <= 0) { return 0; }
+    T ma = std::max(a[0], -std::expm1(a[0]));
+    T mb = std::max(b[0], -std::expm1(b[0]));
+    T result = std::max(a[0] + b[0], -(std::expm1(a[0]) + std::expm1(b[0])));
+    for (Int i = 1; i < n; ++i) {
+        const T a1 = a[i];
+        const T b1 = b[i];
+        const T a0 = logm1exp1m(a1);
+        const T b0 = logm1exp1m(b1);
+        const T min0 = std::min({a0 + b0, a0 + mb, b0 + ma, result});
+        const T min1 = std::min({a1 + b1, a1 + mb, b1 + ma, result});
+        result = std::max(min0, min1);
+        ma = std::min(ma, std::max(a0, a1));
+        mb = std::min(mb, std::max(b0, b1));
     }
     return result;
   }
@@ -137,26 +148,26 @@ static inline int pphoc(const ConstTensor<TT>& X,
     ConstTensor<TTYPE> tX(X);                                           \
     ConstTensor<TTYPE> tY(Y);                                           \
     MutableTensor<TTYPE> tR(R);                                         \
-    return cphoc(tX, tY, &tR, ComputePair());                           \
+    return cphoc(tX, tY, &tR, ComputePairIndependece());                \
   }                                                                     \
                                                                         \
   int pphoc_##STYPE(const TTYPE* X, TTYPE* R) {                         \
     ConstTensor<TTYPE> tX(X);                                           \
     MutableTensor<TTYPE> tR(R);                                         \
-    return pphoc(tX, &tR, ComputePair());                               \
+    return pphoc(tX, &tR, ComputePairIndependece());                    \
   }                                                                     \
                                                                         \
-  int cphoc_min_##STYPE(const TTYPE* X, const TTYPE* Y, TTYPE* R) {     \
+  int cphoc_max_##STYPE(const TTYPE* X, const TTYPE* Y, TTYPE* R) {     \
     ConstTensor<TTYPE> tX(X);                                           \
     ConstTensor<TTYPE> tY(Y);                                           \
     MutableTensor<TTYPE> tR(R);                                         \
-    return cphoc(tX, tY, &tR, ComputePairMin());                        \
+    return cphoc(tX, tY, &tR, ComputePairUpperBound());                 \
   }                                                                     \
                                                                         \
-  int pphoc_min_##STYPE(const TTYPE* X, TTYPE* R) {                     \
+  int pphoc_max_##STYPE(const TTYPE* X, TTYPE* R) {                     \
     ConstTensor<TTYPE> tX(X);                                           \
     MutableTensor<TTYPE> tR(R);                                         \
-    return pphoc(tX, &tR, ComputePairMin());                            \
+    return pphoc(tX, &tR, ComputePairUpperBound());                     \
   }
 
 DEFINE_WRAPPER(f32, THFloatTensor)
