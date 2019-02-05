@@ -2,6 +2,9 @@
 
 #include "./common.h"
 #include "./cpu.h"
+#ifdef WITH_CUDA
+#include "./gpu.h"
+#endif  // WITH_CUDA
 
 namespace prob_phoc {
 
@@ -28,19 +31,22 @@ void cphoc(const at::Tensor& xa, const at::Tensor& xb, at::Tensor& y, const std:
   const auto d = xa.size(1);
   y.resize_({na, nb});
 
-#define DEFINE_SWITCH_CASE_OP(scalar_t, device_type)                      \
-  case device_type: {                                                     \
-    auto impl = ImplFactory<scalar_t, device_type>::CreateImpl(method);   \
+#define DEFINE_SWITCH_CASE_OP(scalar_t, device_type)                    \
+  case device_type: {                                                   \
+    auto impl = ImplFactory<scalar_t, device_type>::CreateImpl(method); \
     CHECK_IMPL("cphoc", method, y.type(), impl);                        \
-    impl->cphoc(                                                          \
-        y.device(), na, nb, d, xa.data<scalar_t>(), xb.data<scalar_t>(),  \
-        y.data<scalar_t>());                                              \
-  }                                                                       \
+    impl->cphoc(                                                        \
+        y.device(), na, nb, d, xa.data<scalar_t>(), xb.data<scalar_t>(), \
+        y.data<scalar_t>());                                            \
+  }                                                                     \
   break
 
   AT_DISPATCH_FLOATING_TYPES(y.type(), "cphoc", [&]{
       switch (y.device().type()) {
         DEFINE_SWITCH_CASE_OP(scalar_t, c10::Device::Type::CPU);
+#ifdef WITH_CUDA
+        DEFINE_SWITCH_CASE_OP(scalar_t, c10::Device::Type::CUDA);
+#endif  // WITH_CUDA
         default:
           ERROR_IMPL("cphoc", method, y.type());
       }
@@ -58,17 +64,20 @@ void pphoc(const at::Tensor& x, at::Tensor& y, const std::string& method) {
   const auto d = x.size(1);
   y.resize_({n * (n - 1) / 2});
 
-#define DEFINE_SWITCH_CASE_OP(scalar_t, device_type)                       \
-  case device_type: {                                                      \
-    auto impl = ImplFactory<scalar_t, device_type>::CreateImpl(method);    \
+#define DEFINE_SWITCH_CASE_OP(scalar_t, device_type)                    \
+  case device_type: {                                                   \
+    auto impl = ImplFactory<scalar_t, device_type>::CreateImpl(method); \
     CHECK_IMPL("pphoc", method, y.type(), impl);                        \
     impl->pphoc(y.device(), n, d, x.data<scalar_t>(), y.data<scalar_t>()); \
-  }                                                                        \
+  }                                                                     \
   break
 
   AT_DISPATCH_FLOATING_TYPES(y.type(), "pphoc", [&]{
       switch (y.device().type()) {
         DEFINE_SWITCH_CASE_OP(scalar_t, c10::Device::Type::CPU);
+#ifdef WITH_CUDA
+        DEFINE_SWITCH_CASE_OP(scalar_t, c10::Device::Type::CUDA);
+#endif  // WITH_CUDA
         default:
           ERROR_IMPL("pphoc", method, y.type());
       }

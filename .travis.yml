@@ -6,6 +6,14 @@ language: python
 os:
   - linux
 
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - gcc-4.9
+      - g++-4.9
+
 python:
   - "2.7"
   - "3.5"
@@ -13,8 +21,7 @@ python:
   - "3.7"
 
 env:
-  - CC=gcc CXX=g++
-  - CC=clang CXX=clang++
+  - CC=gcc-4.9 CXX=g++-4.9
 
 before_install:
   - python -m pip install -U pip
