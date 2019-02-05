@@ -1,3 +1,6 @@
+dist: xenial
+sudo: true
+
 language: python
 
 os:
@@ -7,22 +10,23 @@ python:
   - "2.7"
   - "3.5"
   - "3.6"
+  - "3.7"
 
 env:
   - CC=gcc CXX=g++
   - CC=clang CXX=clang++
 
 before_install:
-  - easy_install -q -U pip
-  - pip install --progress-bar off numpy
-  - pip install --progress-bar off scipy
-  - pip install --progress-bar off cffi
-  - travis/install_pytorch.sh
+  - python -m pip install -U pip
+  - python -m pip install --progress-bar off numpy
+  - python -m pip install --progress-bar off pybind11
+  - python -m pip install --progress-bar off torch
 
 script:
   - CC=$CXX python setup.py install
-  - cd $HOME
+  - cd /tmp 
   - python -m prob_phoc.test
+  - cd -
 
 notifications:
   email:
