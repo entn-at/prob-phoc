@@ -3,33 +3,37 @@
 
 #include <torch/extension.h>
 
+#ifndef __host__
+#define __host__
+#endif
+
+#ifndef __device__
+#define __device__
+#endif
+
 namespace prob_phoc {
 namespace generic {
 
 template <typename T>
-class Impl {
+class PairwiseOp {
  public:
-  typedef T SType;
+  __host__ __device__
+  PairwiseOp() {}
 
-  Impl() {}
+  __host__ __device__
+  virtual ~PairwiseOp() {}
 
-  virtual ~Impl() {}
-
-  virtual SType compute_for_pair(const long int d, const SType* a, const SType* b) const = 0;
-
-  virtual void cphoc(const c10::Device& device, const long int na, const long int nb, const long int d, const SType* xa, const SType* xb, SType* y) const = 0;
-
-  virtual void pphoc(const c10::Device& device, const long int n, const long int d, const SType* x, SType* y) const = 0;
+  __host__ __device__
+  virtual T operator()(const long int n, const T* a, const T* b) const = 0;
 };
 
-template <typename B>
-class SumProdRealSemiring : public B {
+template <typename T>
+class SumProdRealSemiringOp : public PairwiseOp<T> {
  public:
-  typedef typename B::SType SType;
-
-  SType compute_for_pair(const long int d, const SType* pa, const SType* pb) const override {
-    SType result = 1;
-    for (auto i = 0; i < d; ++i) {
+  __host__ __device__
+  T operator()(const long int n, const T* pa, const T* pb) const override {
+    T result = 1;
+    for (auto i = 0; i < n; ++i) {
       const auto pa0 = 1 - pa[i], pa1 = pa[i];
       const auto pb0 = 1 - pb[i], pb1 = pb[i];
       const auto ph0 = pa0 * pb0;
@@ -38,9 +42,18 @@ class SumProdRealSemiring : public B {
     }
     return result;
   }
+};
 
-  static_assert(std::is_base_of<Impl<SType>, B>::value,
-                "B must be descendant of generic::Impl");
+template <typename T>
+class Impl {
+ public:
+  Impl() {}
+
+  virtual ~Impl() {}
+
+  virtual void cphoc(const c10::Device& device, const long int na, const long int nb, const long int d, const T* xa, const T* xb, T* y) const = 0;
+
+  virtual void pphoc(const c10::Device& device, const long int n, const long int d, const T* x, T* y) const = 0;
 };
 
 }  // namespace generic
