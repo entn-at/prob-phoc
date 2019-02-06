@@ -55,7 +55,7 @@ void Impl<T, O>::pphoc(const c10::Device& device, const long int n, const long i
   const dim3 block_size(32, 32);
   const dim3 grid_size(NUM_BLOCKS(n, 32),
                        NUM_BLOCKS(n, 32));
-  //pphoc_kernel<T, O><<<grid_size, block_size, 0, stream>>>(n, d, x, y, op_);
+  pphoc_kernel<T, O><<<grid_size, block_size, 0, stream>>>(n, d, x, y, op_);
   if (stream == nullptr) {
     CHECK_LAST_CUDA_CALL();
   }
