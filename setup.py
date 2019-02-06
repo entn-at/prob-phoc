@@ -34,6 +34,7 @@ def get_cuda_compile_archs(nvcc_flags=None):
 
     return nvcc_flags
 
+
 extra_compile_args = {
     "cxx": ["-std=c++11", "-O3", "-fopenmp"],
     "nvcc": ["-std=c++11", "-O3"],
