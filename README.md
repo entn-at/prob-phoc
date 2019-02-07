@@ -4,56 +4,12 @@
 
 PyTorch functions to compute meaningful probabilistic relevance scores from
 PHOC (Pyramid of Histograms of Characters) embeddings.
+Although they are called Pyramid of Histograms of Characters, in practice
+they are a Pyramid of Bag of Characters. At the end, each word is
+represented by a high-dimensional binary vector.
 
-PHOC embeddings, originally proposed by [Almazan](https://github.com/almazan/watts),
-have been widely used for isolated word recognition and keyword spotting (KWS).
-Several similarity/dissimilarity measures have been proposed to perform recognition
-or rank the candidate word images for a given query, to perform KWS.
-In addition, the models that extract the PHOC embedding for a given image have also
-improved in the last years.
-
-In particular, a VGG-like architecture and the Bray-Curtis measure were proposed
-by [Sudholt](https://github.com/ssudholt/phocnet) to extract the PHOC embedding
-and rank the candidate images in KWS.
-
-Since the PHOC embeddings can be interpreted probabilistically, in my PhD
-thesis I proposed a way of computing the ``relevance probability'' for a
-given pair of PHOC embeddings, assuming that a pair is relevant if the two
-images render the same word (which is the typical definition of ``relevance''
-in KWS settings).
-
-Let _h(x)_ and _h(y)_ be the predicted PHOC from two images, _x_ and _y_.
-The components of the PHOC vector can be interpreted probabilistically as:
-
-_h(x)_ = P(H_1 = 1 | x), P(H_2 = 1 | x), ..., P(H_D = 1 | x)
-
-Assuming that the two images are independent, and that each dimension of the PHOC
-is independent of the others (which is not true, but it is actually assumed turing
-the training of the PHOCNet), it can be proven that the probability that two images
-render the same text (PHOC embedding) is:
-
-```math
-\sum_{h_1, ..., h_D} P(H_1 = h_1, ..., H_D = h_d | x) \cdot P(H_1 = h_1, ..., H_D = h_d | y)
-```
-
-Because the dimensions are independent, there is an efficient way of
-computing this sum in _O(D)_.
-
-## Installation
-
-Simply use the `setup.py` script to compile and install the library.
-You will need a C++11 compiler.
-
-```bash
-python setup.py install
-```
-
-After the installation, you can run the tests to ensure that everything is
-working fine.
-
-```bash
-python -m prob_phoc.test
-```
+See the [wiki](https://github.com/jpuigcerver/prob-phoc/wiki)
+for additional details.
 
 ## Usage
 
@@ -85,4 +41,22 @@ prob = cphoc(x, y, method="sum_prob_real")
 # Compute the log-relevance scores between all pairs of distinct rows in x.
 # Note: The output is a vector with N * (N - 1) / 2 elements.
 logprob = pphoc(x)
+```
+
+## Installation
+
+Simply use the setup.py script to compile and install the library.
+You will need a C++11 compiler (tested with GCC 4.9).
+If you want to compile with CUDA support, you will also need to install
+the CUDA Toolkit (tested with versions 8.0, 9.0 and 10.0)
+
+```bash
+python setup.py install
+```
+
+After the installation, you can run the tests to ensure that everything is
+working fine.
+
+```bash
+python -m prob_phoc.test
 ```
