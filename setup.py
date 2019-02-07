@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import io
 import os
 import re
 import torch
@@ -35,6 +36,17 @@ def get_cuda_compile_archs(nvcc_flags=None):
     return nvcc_flags
 
 
+def get_long_description():
+    fname = os.path.join(os.path.dirname(__file__), "README.md")
+    with io.open(fname, "r") as f:
+        return f.read()
+
+def get_requirements():
+    fname = os.path.join(os.path.dirname(__file__), "requirements.txt")
+    with io.open(fname, "r") as f:
+        return f.readlines()
+
+
 extra_compile_args = {
     "cxx": ["-std=c++11", "-O3", "-fopenmp"],
     "nvcc": ["-std=c++11", "-O3"],
@@ -61,17 +73,23 @@ else:
     Extension = CppExtension
 
 
+description = "Functions to compute probabilistic relevance scores from PHOC embeddings"
+long_description = get_long_description()
+requirements = get_requirements()
+
 setup(
     name="prob_phoc",
-    description="Probabilistic PHOC relevance scores",
+    description=description,
+    long_description=long_description,
+    long_description_content_type="text/markdown",
     version="0.2.0",
     url="https://github.com/jpuigcerver/prob_phoc",
     author="Joan Puigcerver",
     author_email="joapuipe@gmail.com",
     license="MIT",
     # Requirements
-    setup_requires=["pybind11", "torch>=1.0.0"],
-    install_requires=["numpy", "pybind11", "torch>=1.0.0"],
+    setup_requires=requirements,
+    install_requires=requirements,
     packages=find_packages(),
     ext_modules=[
         Extension(
@@ -82,4 +100,22 @@ setup(
         )
     ],
     cmdclass={"build_ext": BuildExtension},
+    classifiers=[
+        "Development Status :: 4 - Beta",
+        "Intended Audience :: Developers",
+        "Intended Audience :: Education",
+        "Intended Audience :: Science/Research",
+        "Programming Language :: Python :: 2",
+        "Programming Language :: Python :: 2.7",
+        "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3.5",
+        "Programming Language :: Python :: 3.6",
+        "Programming Language :: Python :: 3.7",
+        "Topic :: Scientific/Engineering",
+        "Topic :: Scientific/Engineering :: Artificial Intelligence",
+        "Topic :: Scientific/Engineering :: Image Recognition",
+        "Topic :: Software Development",
+        "Topic :: Software Development :: Libraries",
+        "Topic :: Software Development :: Libraries :: Python Modules",
+    ],
 )

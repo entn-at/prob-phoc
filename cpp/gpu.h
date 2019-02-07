@@ -17,9 +17,6 @@ namespace gpu {
 template <typename T, typename O>
 class Impl : public generic::Impl<T> {
  public:
-
-  Impl() {}
-
   Impl(const O& pairwise_op) : op_(pairwise_op) {}
 
   void cphoc(const c10::Device& device, const long int na, const long int nb, const long int d, const T* xa, const T* xb, T* y) const override;
@@ -33,13 +30,15 @@ class Impl : public generic::Impl<T> {
 template <typename T>
 class SumProdLogSemiring : public Impl<T, SumProdLogSemiringOp<T>> {
  public:
-  SumProdLogSemiring() : Impl< T, SumProdLogSemiringOp<T> >() {}
+  SumProdLogSemiring() : Impl<T, SumProdLogSemiringOp<T>>(
+      SumProdLogSemiringOp<T>()) {}
 };
 
 template <typename T>
 class SumProdRealSemiring : public Impl<T, generic::SumProdRealSemiringOp<T>> {
  public:
-  SumProdRealSemiring() : Impl< T, generic::SumProdRealSemiringOp<T> >() {}
+  SumProdRealSemiring() : Impl<T, generic::SumProdRealSemiringOp<T>>(
+      generic::SumProdRealSemiringOp<T>()) {}
 };
 
 }  // namespace gpu

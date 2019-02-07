@@ -1,0 +1,4 @@
+numpy
+pybind11
+typing;python_version<'3.6'
+torch>=1.0.0

@@ -1,3 +1,4 @@
+#include <torch/serialize/tensor.h>
 #include <THC/THC.h>
 
 #include "./../gpu.h"

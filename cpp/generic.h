@@ -1,7 +1,7 @@
 #ifndef PROB_PHOC_GENERIC_H_
 #define PROB_PHOC_GENERIC_H_
 
-#include <torch/extension.h>
+#include <torch/serialize/tensor.h>
 
 #ifndef __host__
 #define __host__
@@ -30,14 +30,16 @@ class PairwiseOp {
 template <typename T>
 class SumProdRealSemiringOp : public PairwiseOp<T> {
  public:
+  using PairwiseOp<T>::PairwiseOp;
+
   __host__ __device__
   T operator()(const long int n, const T* pa, const T* pb) const override {
     T result = 1;
-    for (auto i = 0; i < n; ++i) {
-      const auto pa0 = 1 - pa[i], pa1 = pa[i];
-      const auto pb0 = 1 - pb[i], pb1 = pb[i];
-      const auto ph0 = pa0 * pb0;
-      const auto ph1 = pa1 * pb1;
+    for (long int i = 0; i < n; ++i) {
+      const T pa0 = 1 - pa[i], pa1 = pa[i];
+      const T pb0 = 1 - pb[i], pb1 = pb[i];
+      const T ph0 = pa0 * pb0;
+      const T ph1 = pa1 * pb1;
       result *= ph0 + ph1;
     }
     return result;

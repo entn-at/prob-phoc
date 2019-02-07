@@ -19,6 +19,8 @@ inline T logsumexp(T a, T b) {
 template <typename T>
 class SumProdLogSemiringOp : public generic::PairwiseOp<T> {
  public:
+  using generic::PairwiseOp<T>::PairwiseOp;
+
   T operator()(const long int n, const T* pa, const T* pb) const override {
     T result = 0;
     for (auto i = 0; i < n; ++i) {
