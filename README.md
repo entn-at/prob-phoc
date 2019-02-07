@@ -45,18 +45,36 @@ logprob = pphoc(x)
 
 ## Installation
 
-Simply use the setup.py script to compile and install the library.
-You will need a C++11 compiler (tested with GCC 4.9).
-If you want to compile with CUDA support, you will also need to install
-the CUDA Toolkit (tested with versions 8.0, 9.0 and 10.0)
+The easiest way is to install the package from PyPI:
+
+```bash
+pip install prob-phoc
+```
+
+If you want to install the latest version from the repository, clone it
+and use the setup.py script to compile and install the library.
 
 ```bash
 python setup.py install
 ```
+
+You will need a C++11 compiler (tested with GCC 4.9).
+If you want to compile with CUDA support, you will also need to install
+the CUDA Toolkit (tested with versions 8.0, 9.0 and 10.0)
+
+## Tests and benchmarks
 
 After the installation, you can run the tests to ensure that everything is
 working fine.
 
 ```bash
 python -m prob_phoc.test
+```
+
+I have also some benchmarks to compare CPU vs. CUDA, for different matrix
+sizes and float precision. These take quite a long to run, so don't hold
+your breath.
+
+```bash
+python -m prob_phoc.benchmark
 ```
